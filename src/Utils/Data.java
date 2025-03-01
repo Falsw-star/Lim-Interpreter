@@ -1,5 +1,6 @@
 package Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ public class Data {
 
     public static Map<String, Integer> KEYLENGTHS = Map.of(
             "print", 1,
+            "let", 2,
             "num", 2,
             "str", 2,
             "mana", 3,
@@ -19,4 +21,11 @@ public class Data {
     );
     public static List<Character> NUMCHARS = List.of('n', 'i', 'v', 'x', 'l', 'c', 'd', 'm');
     public static List<Character> NOMORCHARS = List.of('a', 'b', 'e', 'f', 'g', 'h', 'j', 'k', 'o', 'p', 'q', 'r', 's', 't', 'u', 'w', 'y', 'z');
+
+    public static List<Character> validChars = new ArrayList<>();
+    static {
+        validChars.addAll(NUMCHARS);
+        validChars.addAll(NOMORCHARS);
+        validChars.addAll(List.of(' ' ,'·', '-'));
+    }
 }

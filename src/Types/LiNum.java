@@ -35,11 +35,6 @@ public class LiNum extends Named {
         return value;
     }
 
-    public LiNum setValue(Integer value) {
-        this.value = value;
-        return this;
-    }
-
     public LiNum add(Integer value) {
         this.value += value;
         return this;
@@ -115,8 +110,7 @@ public class LiNum extends Named {
     public static LiNum valueOf(char[] value, Variables vars) {
         LinkedList<String> nums = Functions.getStrings(value);
 
-        String first = nums.poll();
-        LiNum result = valueOf(first, vars);
+        LiNum result = valueOf(Objects.requireNonNull(nums.poll()), vars);
         while (!nums.isEmpty()) {
             String op = nums.poll();
             LiNum liNum = valueOf(Objects.requireNonNull(nums.poll()), vars);
@@ -147,7 +141,7 @@ public class LiNum extends Named {
                     throw new IllegalArgumentException("Invalid operator: " + op);
             }
         }
-        return result;
+        return new LiNum("_", result.getValue());
     }
 
     public static LiNum valueOf(String value, Variables vars) {
@@ -170,6 +164,10 @@ public class LiNum extends Named {
     public String toString() {
         StringBuilder result = new StringBuilder();
         Integer temp = this.value;
+
+        if (temp == 0) {
+            return "n";
+        }
 
         while (temp != 0) {
             if (temp >= 1000) {

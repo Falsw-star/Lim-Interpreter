@@ -1,89 +1,57 @@
-import Types.LiNum;
-import Types.LiString;
 import Utils.Data;
 import Utils.Functions;
 import Utils.Variables;
 
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Scanner;
+import java.util.function.BiConsumer;
 
 public class Main {
 
-    public static final String TEST_CODE = "str fooI I num fooII C str fooIII fooI=mfooII print fooIII";
+    private static Scanner scanner = new Scanner(System.in);
+    public static final String TEST_CODE = "num aaa III";
 
-    public static Map<String, Consumer<LinkedList<String>>> PARSERS = Map.of(
-            "print", Main::parsePrint,
-            "num", Main::parseNum,
-            "str", Main::parseString
+    public static Map<String, BiConsumer<LinkedList<String>, Variables>> PARSERS = Map.of(
+            "print", Main::print,
+            "let", Main::let,
+            "num", Main::createNum,
+            "str", Main::createString
     );
 
-    private static Variables VARS = new Variables();
-
-    private static int level = 1;
-
     public static void main(String[] args) {
-        String lowerCase = TEST_CODE.toLowerCase();
-        parseKey(Functions.lines(lowerCase, level));
-    }
 
-    public static LinkedList<LinkedList<String>> parseKey(LinkedList<String> lines) {
+        Variables vars = new Variables();
 
-        LinkedList<LinkedList<String>> parsed = new LinkedList<>();
-        LinkedList<String> current = new LinkedList<>();
-
-        while (!lines.isEmpty()) {
-
-            String key = lines.poll();
-            if (!Data.KEYLENGTHS.containsKey(key)) {
-                throw new IllegalArgumentException("Invalid key: " + key);
+        while (true) {
+            System.out.print("> ");
+            String code = scanner.nextLine();
+            code = Functions.toLowerCase(code);
+            try {
+                vars = Functions.parse(code, PARSERS, vars, 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println();
             }
-
-            int length = Data.KEYLENGTHS.get(key);
-            for (int i = 0; i < length; i++) {
-                current.add(lines.poll());
-            }
-
-            parsed.add(current);
-            PARSERS.get(key).accept(current);
-            current.clear();
         }
 
-        return parsed;
-    }
-
-    public static void checkLength(LinkedList<String> lines, int length) {
-        if (lines.size() != length) {
-            throw new IllegalArgumentException("Invalid number of arguments: " + lines);
-        }
-    }
-
-    public static void parseNum(LinkedList<String> lines) {
-        checkLength(lines, 2);
-
-        String name = lines.poll();
-        String value = lines.poll();
-        VARS.create(new LiNum(name, value, VARS));
-
-    }
-
-    public static void parseString(LinkedList<String> lines) {
-        checkLength(lines, 2);
-
-        String name = lines.poll();
-        String value = lines.poll();
-        VARS.create(new LiString(name, value, VARS));
     }
 
 
-    public static void parsePrint(LinkedList<String> lines) {
-        checkLength(lines, 1);
 
-        String name = lines.poll();
-        if (!VARS.containsKey(name)) {
-            System.out.println();
-            return;
-        }
-        System.out.println(VARS.get(name).toLiString().toString());
+    public static void createNum(LinkedList<String> lines, Variables vars) {
+        vars.create(Functions.parseNum(lines, vars));
+    }
+
+    public static void createString(LinkedList<String> lines, Variables vars) {
+        vars.create(Functions.parseString(lines, vars));
+    }
+
+    public static void let(LinkedList<String> lines, Variables vars) {
+        Functions.let(lines, vars);
+    }
+
+    public static void print(LinkedList<String> lines, Variables vars) {
+        Functions.print(lines, vars);
     }
 }

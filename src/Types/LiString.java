@@ -1,6 +1,5 @@
 package Types;
 
-import Utils.Data;
 import Utils.Functions;
 import Utils.Variables;
 
@@ -19,6 +18,11 @@ public class LiString extends Named {
     public LiString(String name, String value) {
         this.name = name;
         this.value = value;
+    }
+
+    public LiString(String name) {
+        this.name = name;
+        this.value = "";
     }
 
     public String getValue() {
