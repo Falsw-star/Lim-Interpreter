@@ -1,4 +1,5 @@
-import Types.Num;
+import Types.LiNum;
+import Types.LiString;
 import Utils.Data;
 import Utils.Functions;
 import Utils.Variables;
@@ -9,11 +10,12 @@ import java.util.function.Consumer;
 
 public class Main {
 
-    public static final String TEST_CODE = "num fooI XX num fooII XXX num fooIII fooI=mfooII print fooIII";
+    public static final String TEST_CODE = "str fooI I num fooII C str fooIII fooI=mfooII print fooIII";
 
     public static Map<String, Consumer<LinkedList<String>>> PARSERS = Map.of(
             "print", Main::parsePrint,
-            "num", Main::parseNum
+            "num", Main::parseNum,
+            "str", Main::parseString
     );
 
     private static Variables VARS = new Variables();
@@ -61,16 +63,27 @@ public class Main {
 
         String name = lines.poll();
         String value = lines.poll();
-        Num var = new Num(name, value, VARS);
-        VARS.create(var);
+        VARS.create(new LiNum(name, value, VARS));
 
     }
+
+    public static void parseString(LinkedList<String> lines) {
+        checkLength(lines, 2);
+
+        String name = lines.poll();
+        String value = lines.poll();
+        VARS.create(new LiString(name, value, VARS));
+    }
+
 
     public static void parsePrint(LinkedList<String> lines) {
         checkLength(lines, 1);
 
         String name = lines.poll();
-        Object value = VARS.get(name);
-        System.out.println(value);
+        if (!VARS.containsKey(name)) {
+            System.out.println();
+            return;
+        }
+        System.out.println(VARS.get(name).toLiString().toString());
     }
 }

@@ -1,11 +1,11 @@
 package Utils;
 
 import Types.Named;
-import Types.Num;
+import Types.LiNum;
 
 import java.util.HashMap;
 
-public class Variables extends HashMap<String, Object> {
+public class Variables extends HashMap<String, Named> {
 
     private String name;
 
@@ -26,7 +26,7 @@ public class Variables extends HashMap<String, Object> {
         return this;
     }
 
-    public Num getNum(String name) {
-        return (Num) this.get(name);
+    public LiNum getNum(String name) {
+        return (LiNum) this.get(name);
     }
 }

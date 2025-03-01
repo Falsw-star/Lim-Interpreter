@@ -9,7 +9,7 @@ public class Data {
     public static Map<String, Integer> KEYLENGTHS = Map.of(
             "print", 1,
             "num", 2,
-            "string", 2,
+            "str", 2,
             "mana", 3,
             "chunk", 4
     );
