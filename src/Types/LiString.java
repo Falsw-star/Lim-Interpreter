@@ -11,17 +11,17 @@ public class LiString extends Named {
     private String value;
 
     public LiString(String name, String value, Variables vars) {
-        this.name = name;
+        super(name);
         this.value = valueOf(value.toCharArray(), vars).getValue();
     }
 
     public LiString(String name, String value) {
-        this.name = name;
+        super(name);
         this.value = value;
     }
 
     public LiString(String name) {
-        this.name = name;
+        super(name);
         this.value = "";
     }
 

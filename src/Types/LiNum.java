@@ -12,22 +12,22 @@ public class LiNum extends Named {
     private Integer value;
 
     public LiNum(String name, Integer value) {
-        this.name = name;
+        super(name);
         this.value = value;
     }
 
     public LiNum(String name, LiNum value) {
-        this.name = name;
+        super(name);
         this.value = value.getValue();
     }
 
     public LiNum(String name, String value, Variables vars) {
-        this.name = name;
+        super(name);
         this.value = valueOf(value.toCharArray(), vars).getValue();
     }
 
     public LiNum(String name) {
-        this.name = name;
+        super(name);
         this.value = 0;
     }
 
@@ -146,7 +146,7 @@ public class LiNum extends Named {
 
     public static LiNum valueOf(String value, Variables vars) {
         if (!Data.NUMCHARS.contains(value.charAt(0))) {
-            return vars.getNum(value);
+            return (LiNum) vars.get(value);
         } else {
             char[] chars = value.toCharArray();
             Integer result = 0;

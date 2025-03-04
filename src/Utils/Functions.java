@@ -1,18 +1,22 @@
 package Utils;
 
-import Types.LiNum;
-import Types.LiString;
-import Types.Named;
+import Types.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class Functions {
 
-    public static String toLowerCase(String str) {
-        return str.toLowerCase();
+    public static String wash(String code) {
+        char[] c_code = code.toLowerCase().toCharArray();
+        StringBuilder result = new StringBuilder();
+        for (char c : c_code) {
+            if (Data.validChars.contains(c)) {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
     public static void checkLength(LinkedList<String> lines, int length) {
@@ -26,21 +30,45 @@ public class Functions {
         return new LinkedList<>(Arrays.asList(split));
     }
 
-    public static LiNum parseNum(LinkedList<String> lines, Variables vars) {
+    public static LiNum parseNum(LinkedList<String> lines, Variables vars, int level) {
         Functions.checkLength(lines, 2);
-        String name = lines.poll();
+        String name = new LiString("_", lines.poll(), vars).toString();
         String value = lines.poll();
         return new LiNum(name, value, vars);
     }
 
-    public static LiString parseString(LinkedList<String> lines, Variables vars) {
+    public static LiString parseString(LinkedList<String> lines, Variables vars, int level) {
         Functions.checkLength(lines, 2);
-        String name = lines.poll();
+        String name = new LiString("_", lines.poll(), vars).toString();
         String value = lines.poll();
         return new  LiString(name, value, vars);
     }
 
-    public static void let(LinkedList<String> lines, Variables vars) {
+    public static Chunk parseChunk(LinkedList<String> lines, Variables vars, int level) {
+        Functions.checkLength(lines, 3);
+        String name = lines.poll();
+        String params = lines.poll();
+        String code = lines.poll();
+        return new Chunk(name, params, code, level, vars);
+    }
+
+    public static void createNum(LinkedList<String> lines, Variables vars, int level) {
+        vars.create(Functions.parseNum(lines, vars, level));
+    }
+
+    public static void createString(LinkedList<String> lines, Variables vars, int level) {
+        vars.create(Functions.parseString(lines, vars, level));
+    }
+
+    public static void createChunk(LinkedList<String> lines, Variables vars, int level) {
+        vars.create(Functions.parseChunk(lines, vars, level));
+    }
+
+    // public static ManaCradle parseMana(LinkedList<String> lines, Variables vars, int level)
+
+    // public static Interactable parseInteractable(String value, Variables vars, int level)
+
+    public static void let(LinkedList<String> lines, Variables vars, int level) {
         Functions.checkLength(lines, 2);
 
         String name = lines.poll();
@@ -57,7 +85,7 @@ public class Functions {
         }
     }
 
-    public static void print(LinkedList<String> lines, Variables vars) {
+    public static void print(LinkedList<String> lines, Variables vars, Integer level) {
         Functions.checkLength(lines, 1);
 
         String name = lines.poll();
@@ -102,7 +130,7 @@ public class Functions {
         return strings;
     }
 
-    public static Variables parse(String code, Map<String, BiConsumer<LinkedList<String>, Variables>> Parsers, Variables vars, int level) {
+    public static Variables parse(String code, Map<String, Parser<LinkedList<String>, Variables, Integer>> Parsers, int level, Variables vars) {
 
         LinkedList<String> lines = Functions.lines(code, level);
         LinkedList<String> current = new LinkedList<>();
@@ -114,16 +142,20 @@ public class Functions {
                 throw new IllegalArgumentException("Invalid key: " + key);
             }
 
-            int length = Data.KEYLENGTHS.get(key);
+            int length = Data.KEYLENGTHS.get(key).apply(vars);
             for (int i = 0; i < length; i++) {
                 current.add(lines.poll());
             }
 
-            Parsers.get(key).accept(current, vars);
+            Parsers.get(key).parse(current, vars, level);
             current.clear();
         }
 
         return vars;
+    }
+
+    public static Variables parse(String code, Map<String, Parser<LinkedList<String>, Variables, Integer>> Parsers, int level) {
+        return parse(code, Parsers, level, new Variables());
     }
 
 }

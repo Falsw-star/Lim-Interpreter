@@ -1,7 +1,6 @@
 package Utils;
 
 import Types.Named;
-import Types.LiNum;
 
 import java.util.HashMap;
 
@@ -11,6 +10,10 @@ public class Variables extends HashMap<String, Named> {
 
     public Variables() {
         super();
+    }
+
+    public Variables(Variables vars) {
+        super(vars);
     }
 
     public Variables create(Named var) {
@@ -26,7 +29,8 @@ public class Variables extends HashMap<String, Named> {
         return this;
     }
 
-    public LiNum getNum(String name) {
-        return (LiNum) this.get(name);
+    @Override
+    public Named get(Object key) {
+        return super.get(key).get();
     }
 }
