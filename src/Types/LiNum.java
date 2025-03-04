@@ -26,11 +26,6 @@ public class LiNum extends Named {
         this.value = valueOf(value.toCharArray(), vars).getValue();
     }
 
-    public LiNum(String name) {
-        super(name);
-        this.value = 0;
-    }
-
     public Integer getValue() {
         return value;
     }

@@ -33,15 +33,6 @@ public class Chunk extends Named {
         return Functions.parse(this.code, Data.PARSERS, this.level, vars).get(this.name);
     }
 
-    public Integer countParams() {
-        return Functions.parse(this.params, Data.PARSERS, this.level).size();
-    }
-
-    public static Integer countParams(String name, Variables vars) {
-        Chunk chunk = (Chunk) vars.get(name);
-        return chunk.countParams();
-    }
-
     public LiString toLiString() {
         return this.get().toLiString();
     }

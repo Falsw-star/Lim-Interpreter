@@ -6,8 +6,6 @@ import java.util.HashMap;
 
 public class Variables extends HashMap<String, Named> {
 
-    private String name;
-
     public Variables() {
         super();
     }
@@ -25,7 +23,6 @@ public class Variables extends HashMap<String, Named> {
             throw new IllegalArgumentException("Variable already exists: " + name);
         }
         this.put(name, var);
-        this.name = name;
         return this;
     }
 

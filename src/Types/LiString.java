@@ -20,11 +20,6 @@ public class LiString extends Named {
         this.value = value;
     }
 
-    public LiString(String name) {
-        super(name);
-        this.value = "";
-    }
-
     public String getValue() {
         return this.value;
     }
